@@ -36,7 +36,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="nip-Tv-Niy" kind="show" id="2q0-C8-MCy"/>
+                                            <segue destination="XFW-Tk-wVP" kind="show" id="P3c-1o-xtj"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="H4V-Zv-fNy">
@@ -56,7 +56,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="Py9-QZ-Hx4" kind="show" id="CLK-iW-T4O"/>
+                                            <segue destination="2M5-YH-pwa" kind="show" id="a2d-Kr-KWk"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -73,55 +73,37 @@
             </objects>
             <point key="canvasLocation" x="-62.318840579710148" y="26.785714285714285"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="UFc-vd-E1o">
+        <!--ModuleA View Controller-->
+        <scene sceneID="ZWP-S5-MA7">
             <objects>
-                <viewController id="Py9-QZ-Hx4" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="0J8-Hz-8jt">
+                <viewController id="XFW-Tk-wVP" customClass="ModuleAViewController" customModule="Lab3" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Zkd-gl-cFb">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Module B" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M7e-JH-sfL">
-                                <rect key="frame" x="186" y="438" width="72" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="nI2-6Z-3ZH"/>
+                        <viewLayoutGuide key="safeArea" id="T78-me-qHS"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" id="tcd-BW-7KU"/>
+                    <navigationItem key="navigationItem" id="JCa-OA-OV1"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="rdO-KB-gOU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cfw-Wj-yJ0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="891" y="440"/>
+            <point key="canvasLocation" x="1144" y="-214"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="5zE-TO-U2M">
+        <!--ModuleB View Controller-->
+        <scene sceneID="iEa-cd-Imt">
             <objects>
-                <viewController id="nip-Tv-Niy" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="e6T-Nk-kWR">
+                <viewController id="2M5-YH-pwa" customClass="ModuleBViewController" customModule="Lab3" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="VeY-0K-ot7">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Module A" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f3B-YT-zs9">
-                                <rect key="frame" x="186" y="438" width="73" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="OBD-v6-OyE"/>
+                        <viewLayoutGuide key="safeArea" id="N7e-Jb-wKI"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" id="bBO-Um-Vmo"/>
+                    <navigationItem key="navigationItem" id="Szn-IX-kVo"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="aiO-rC-GwF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Go4-6K-BpV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="844.92753623188412" y="-230.35714285714283"/>
+            <point key="canvasLocation" x="1143" y="498"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="RS4-I2-tJR">
