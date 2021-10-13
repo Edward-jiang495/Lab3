@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SpriteKit
 
 class ViewController: UIViewController {
 
@@ -17,6 +18,7 @@ class ViewController: UIViewController {
     //high score
     var currScoreNum = 0;
     //current score
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         pastStepNum = 0
@@ -27,6 +29,13 @@ class ViewController: UIViewController {
         currStep.text = "Today's Step \n \(currStepNum)"
         highScore.text = "High Score \n \(highScoreNum)"
         currScore.text = "Current Score \n \(currScoreNum)"
+        var scene = GameScene(size: view.bounds.size)
+        let skView = view as! SKView // the view in storyboard must be an SKView
+        scene.scaleMode = .resizeFill
+        skView.presentScene(scene)
+//
+        
+        
     }
     
 
