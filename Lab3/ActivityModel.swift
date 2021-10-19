@@ -19,8 +19,9 @@ class ActivityModel {
         case UNKNOWN
     }
     
-    var currentActivity: ValidatedActivity = ValidatedActivity.INVALID {
+    private var currentActivity: ValidatedActivity = ValidatedActivity.INVALID {
         didSet {
+            print(currentActivity)
             activityChangeCallback()
         }
     }
@@ -46,6 +47,18 @@ class ActivityModel {
     var activityChangeCallback: (()->()) = {} {
         didSet {
             activityChangeCallback()
+        }
+    }
+    
+    func getCurrentActivity() -> ValidatedActivity {
+        return currentActivity
+    }
+    
+    func setCurrentActivity(activity: ValidatedActivity)
+    {
+        if activity != currentActivity
+        {
+            currentActivity = activity
         }
     }
 }

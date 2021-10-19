@@ -5,7 +5,7 @@ import CoreMotion
 class GameScene: SKScene, SKPhysicsContactDelegate {
 
     let debug = true
-    
+
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         backgroundColor = SKColor.white
@@ -13,8 +13,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.startMotionUpdates()
 
         self.spawnTrack()
+        self.spawnPlayer(xPos: size.width * 0.5, yPos: size.height * 0.625)
 
-        if debug{
+        if debug {
             let skview = self.view!
             skview.showsFPS = true
             skview.showsNodeCount = true
@@ -26,16 +27,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let touch = touches.first!
         let location = touch.location(in: self.view)
 
-        self.spawnPlayer(xPos: location.x, yPos: location.y)
+//        self.spawnPlayer(xPos: location.x, yPos: location.y)
     }
 
     func spawnPlayer(xPos: CGFloat, yPos: CGFloat, playerScale: CGFloat = 0.08)
     {
         let player = SKSpriteNode(imageNamed: ActivityModel.shared.activityIconName)
 
+        // game state listener
+        GameModel.shared.gameStateListeners["player"] = { (state: GameModel.State) -> () in
+            switch state {
+            case GameModel.State.IN_GAME:
+                player.physicsBody?.isDynamic = true
+                player.physicsBody?.affectedByGravity = true
+
+            case GameModel.State.FINISHED:
+                player.physicsBody?.isDynamic = false
+                player.physicsBody?.affectedByGravity = false
+
+            case GameModel.State.IDLE:
+                player.physicsBody?.isDynamic = false
+                player.physicsBody?.affectedByGravity = false
+
+                player.position = CGPoint(x: xPos, y: yPos)
+            }
+        }
+
         // register player to icon callback to update icon on activity change
         ActivityModel.shared.activityChangeCallback = {
-            
+
             // create texture
             player.texture = SKTexture(imageNamed: ActivityModel.shared.activityIconName)
 
@@ -47,22 +67,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             size.width *= playerScale
 
             player.size = size
+
+            // maintain velocity
+            var velocity: CGVector = CGVector()
+            var angularVelocity: CGFloat = CGFloat()
+            var hasVelocity = false
+
+            if let physicsBody = player.physicsBody {
+                velocity = physicsBody.velocity
+                angularVelocity = physicsBody.angularVelocity
+                
+                hasVelocity = true
+
+            }
             
             // generate physics body from textures
             player.physicsBody = SKPhysicsBody(texture: player.texture!, size: player.size)
-            
-            player.physicsBody?.isDynamic = true
+
             player.physicsBody?.mass *= 1.4
             player.physicsBody?.restitution = 0.3
-            
+
             player.physicsBody?.contactTestBitMask = 0x00000001
             player.physicsBody?.collisionBitMask = 0x00000001
             player.physicsBody?.categoryBitMask = 0x00000001
+            
+            GameModel.shared.gameStateListeners["player"]!(GameModel.shared.getState())
+
+            if GameModel.shared.getState() == GameModel.State.IN_GAME && hasVelocity
+            {
+                player.physicsBody?.velocity = velocity
+                player.physicsBody?.angularVelocity = angularVelocity
+            }
         }
 
-        // place player
-        player.position = CGPoint(x: xPos, y: yPos)
-        
         if debug {
             player.alpha = 0.05
         }
@@ -71,7 +108,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     func spawnTrack() {
-        
+
         // create textures
         let trackOutterRightTexture = SKTexture(imageNamed: "track_outter_right")
         let trackOutterLeftTexture = SKTexture(imageNamed: "track_outter_left")

@@ -18,11 +18,11 @@ class ViewController: UIViewController {
     @IBOutlet weak var todaysValLabel: UILabel!
     //current score label
     @IBOutlet weak var goalLabel: UILabel!
-    
+
     @IBOutlet weak var scoreBoard: UIStackView!
     @IBOutlet weak var goalTextField: UITextField!
     @IBOutlet weak var goalSlider: UISlider!
-    
+
     @IBOutlet weak var startGame: UIButton!
 
     let activityManager = CMMotionActivityManager()
@@ -34,53 +34,56 @@ class ViewController: UIViewController {
     var currScoreNum = 0; //current score
 
     override func viewDidLoad() {
+
         super.viewDidLoad()
-        pastStepNum = 0
-        currStepNum = 0
-        highScoreNum = 0
-        currScoreNum = 0
+
         todaysValLabel.text = "\(Int(pastStepNum))"
         yesterdaysValLabel.text = "\(Int(currStepNum))"
-        print(self.view.frame.width)
-        print(self.view.frame.height)
+
         self.scoreBoard.translatesAutoresizingMaskIntoConstraints = true
         self.scoreBoard.frame = CGRect(x: 0, y: 40, width: self.view.frame.width, height: self.view.frame.height * (1.0 - 0.7) - 40)
-        
+
 //        startGame.titleLabel?.font =  UIFont(name: "Digital-7", size: 35)
 
-        
-        
         let stepGoal = UserDefaults.standard.integer(forKey: "stepGoal")
         goalSlider.value = Float(stepGoal)
         goalTextField.text = "\(stepGoal)"
+
         var scene = GameScene(size: view.bounds.size)
         let skView = view as! SKView // the view in storyboard must be an SKView
         scene.scaleMode = .resizeFill
         skView.presentScene(scene)
-//
+
+        // listen to gamestate updates
+        GameModel.shared.gameStateListeners["startbutton"] = UpdateStartButton
 
         startActivityMonitoring()
         startPedometerMonitoring()
         getYesterdaysSteps()
-
     }
 
-
-
-
-
     @IBAction func start(_ sender: UIButton) {
-       
-        print((startGame.titleLabel?.text)! == "Start")
-        if((startGame.titleLabel?.text)! == "Start") {
-            print("in restart")
-            startGame.setTitle("Restart", for: .normal)
-//            startGame.titleLabel?.font =  UIFont(name: "Digital-7", size: 35)
-        }
-        else {
-            startGame.setTitle("Start", for: .normal)
-//            startGame.titleLabel?.font =  UIFont(name: "Digital-7", size: 35)
-            
+        GameModel.shared.Start()
+    }
+
+    func UpdateStartButton(state: GameModel.State) {
+        DispatchQueue.main.async {
+            let attribTitle = self.startGame.attributedTitle(for: .normal)
+
+            switch state {
+
+            case GameModel.State.IN_GAME:
+                attribTitle?.setValue(" ", forKey: "string")
+
+            case GameModel.State.IDLE:
+                attribTitle?.setValue("Start Game", forKey: "string")
+
+            case GameModel.State.FINISHED:
+                attribTitle?.setValue("Restart", forKey: "string")
+
+            }
+
+            self.startGame.setAttributedTitle(attribTitle, for: .normal)
         }
     }
 
@@ -93,23 +96,29 @@ class ViewController: UIViewController {
             self.activityManager.startActivityUpdates(to: OperationQueue.main)
             { (activity: CMMotionActivity?) -> Void in
                 if let unwrappedActivity = activity {
-                    if(unwrappedActivity.walking) {
-                        print("Walking")
-                        ActivityModel.shared.currentActivity = ActivityModel.ValidatedActivity.WALKING
+                    if(unwrappedActivity.walking)
+                    {
+                        ActivityModel.shared.setCurrentActivity(activity: ActivityModel.ValidatedActivity.WALKING)
                     }
-                    else if(unwrappedActivity.running) {
-                        print("Running")
-                        ActivityModel.shared.currentActivity = ActivityModel.ValidatedActivity.RUNNING
+
+                    else if(unwrappedActivity.running)
+                    {
+                        ActivityModel.shared.setCurrentActivity(activity: ActivityModel.ValidatedActivity.RUNNING)
                     }
-                    else if(unwrappedActivity.stationary) {
-                        print("Stationary")
-                        ActivityModel.shared.currentActivity = ActivityModel.ValidatedActivity.STANDING
-                    } else if(unwrappedActivity.automotive || unwrappedActivity.cycling) {
-                        print("You should not be playing this game.")
-                        ActivityModel.shared.currentActivity = ActivityModel.ValidatedActivity.INVALID
-                    } else {
-                        print("Unknown")
-                        ActivityModel.shared.currentActivity = ActivityModel.ValidatedActivity.UNKNOWN
+
+                    else if(unwrappedActivity.stationary)
+                    {
+                        ActivityModel.shared.setCurrentActivity(activity: ActivityModel.ValidatedActivity.STANDING)
+                    }
+
+                    else if(unwrappedActivity.automotive || unwrappedActivity.cycling)
+                    {
+                        ActivityModel.shared.setCurrentActivity(activity: ActivityModel.ValidatedActivity.INVALID)
+                    }
+
+                    else
+                    {
+                        ActivityModel.shared.setCurrentActivity(activity: ActivityModel.ValidatedActivity.UNKNOWN)
                     }
                 }
             }
@@ -140,22 +149,22 @@ class ViewController: UIViewController {
     @IBAction func sliderChanged(_ sender: Any) {
         let updatedGoal = Int(round(goalSlider.value))
         goalTextField.text = "\(updatedGoal)"
-        UserDefaults.standard.set(updatedGoal,forKey: "stepGoal")
+        UserDefaults.standard.set(updatedGoal, forKey: "stepGoal")
     }
-    
+
     @IBAction func textFieldChange(_ sender: Any) {
         if let input = Int(goalTextField.text!) {
             print(input)
-            UserDefaults.standard.set(input,forKey: "stepGoal")
+            UserDefaults.standard.set(input, forKey: "stepGoal")
         }
-        
+
     }
-    
+
     @IBAction func screenTapped(_ sender: Any) {
-        goalTextField.resignFirstResponder();
+        goalTextField.resignFirstResponder()
     }
-    
-    
+
+
     func getYesterdaysSteps() {
 
         let startOfDay = Calendar.current.startOfDay(for: Date().dayBefore)

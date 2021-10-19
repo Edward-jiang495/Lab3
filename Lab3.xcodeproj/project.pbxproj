@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		55D9B9FA271F2DC10018C0C5 /* digital-7.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55D9B9F9271F2DC00018C0C5 /* digital-7.ttf */; };
 		8E882301271F0447003EF930 /* ActivityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E882300271F0447003EF930 /* ActivityModel.swift */; };
+		8E882303271F55F2003EF930 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E882302271F55F2003EF930 /* GameModel.swift */; };
 		AB311222270B54820095DDB4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB311221270B54820095DDB4 /* AppDelegate.swift */; };
 		AB311224270B54820095DDB4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB311223270B54820095DDB4 /* SceneDelegate.swift */; };
 		AB311226270B54820095DDB4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB311225270B54820095DDB4 /* ViewController.swift */; };
@@ -22,6 +23,7 @@
 /* Begin PBXFileReference section */
 		55D9B9F9271F2DC00018C0C5 /* digital-7.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "digital-7.ttf"; sourceTree = "<group>"; };
 		8E882300271F0447003EF930 /* ActivityModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityModel.swift; sourceTree = "<group>"; };
+		8E882302271F55F2003EF930 /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		AB31121E270B54820095DDB4 /* Lab3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lab3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB311221270B54820095DDB4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AB311223270B54820095DDB4 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				8E882300271F0447003EF930 /* ActivityModel.swift */,
+				8E882302271F55F2003EF930 /* GameModel.swift */,
 				AB311221270B54820095DDB4 /* AppDelegate.swift */,
 				AB311223270B54820095DDB4 /* SceneDelegate.swift */,
 				AB311225270B54820095DDB4 /* ViewController.swift */,
@@ -156,6 +159,7 @@
 				8E882301271F0447003EF930 /* ActivityModel.swift in Sources */,
 				AB311222270B54820095DDB4 /* AppDelegate.swift in Sources */,
 				AB311224270B54820095DDB4 /* SceneDelegate.swift in Sources */,
+				8E882303271F55F2003EF930 /* GameModel.swift in Sources */,
 				AB31122C270B54820095DDB4 /* Lab3.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
