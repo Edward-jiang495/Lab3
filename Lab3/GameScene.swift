@@ -23,13 +23,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
 
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let touch = touches.first!
-        let location = touch.location(in: self.view)
-
-//        self.spawnPlayer(xPos: location.x, yPos: location.y)
-    }
-
     func spawnPlayer(xPos: CGFloat, yPos: CGFloat, playerScale: CGFloat = 0.08)
     {
         let player = SKSpriteNode(imageNamed: ActivityModel.shared.activityIconName)
