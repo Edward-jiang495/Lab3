@@ -18,19 +18,18 @@ class ViewController: UIViewController {
     //high score label
     @IBOutlet weak var currScore: UILabel!
     //current score label
-    
-    
+
+
     @IBOutlet weak var startGame: UIButton!
-    
+
     let activityManager = CMMotionActivityManager()
     let pedometer = CMPedometer()
-    
+
     var pastStepNum = 0; //yesterday's step
     var currStepNum = 0; //today's step
     var highScoreNum = 0; //high score
     var currScoreNum = 0; //current score
-    var currentAction = "Other"; //current action
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         pastStepNum = 0
@@ -46,72 +45,70 @@ class ViewController: UIViewController {
         scene.scaleMode = .resizeFill
         skView.presentScene(scene)
 //
-        
+
         startActivityMonitoring()
         startPedometerMonitoring()
         getYesterdaysSteps()
-        
+
     }
-    
 
 
-    
-    
+
+
+
     @IBAction func start(_ sender: UIButton) {
-        if(startGame.titleLabel?.text == "Start"){
+        if(startGame.titleLabel?.text == "Start") {
             startGame.setTitle("Restart", for: .normal)
         }
-        else{
+        else {
             startGame.setTitle("Start", for: .normal)
         }
     }
-    
 
-     // MARK: ======Motion Methods======
-     func startActivityMonitoring(){
-         // if active, let's start processing
-         if CMMotionActivityManager.isActivityAvailable(){
-             // assign updates to the main queue for activity
-             self.activityManager.startActivityUpdates(to: OperationQueue.main)
-             {(activity:CMMotionActivity?)->Void in
-                 if let unwrappedActivity = activity {
-                                         
-                     //print(unwrappedActivity.description)
-                     if(unwrappedActivity.walking){
-                         print("Walking")
-                         self.currentAction = "Walking";
-                     }
-                     else if(unwrappedActivity.running){
-                         print("Running")
-                         self.currentAction = "Running";
-                     }
-                     else if(unwrappedActivity.stationary){
-                         print("Stationary")
-                         self.currentAction = "Stationary";
-                     }else if(unwrappedActivity.automotive || unwrappedActivity.cycling){
-                         print("You should not be playing this game.")
-                         self.currentAction = "Other";
-                     }else{
-                         print("Unknown")
-                         self.currentAction = "Unknown";
-                     }
-                 }
-             }
-         }
-         
-     }
-    
-    func startPedometerMonitoring(){
+
+    // MARK: ======Motion Methods======
+    func startActivityMonitoring() {
+        // if active, let's start processing
+        if CMMotionActivityManager.isActivityAvailable() {
+            // assign updates to the main queue for activity
+            self.activityManager.startActivityUpdates(to: OperationQueue.main)
+            { (activity: CMMotionActivity?) -> Void in
+                if let unwrappedActivity = activity {
+                    if(unwrappedActivity.walking) {
+                        print("Walking")
+                        ActivityModel.shared.currentActivity = ActivityModel.ValidatedActivity.WALKING
+                    }
+                    else if(unwrappedActivity.running) {
+                        print("Running")
+                        ActivityModel.shared.currentActivity = ActivityModel.ValidatedActivity.RUNNING
+                    }
+                    else if(unwrappedActivity.stationary) {
+                        print("Stationary")
+                        ActivityModel.shared.currentActivity = ActivityModel.ValidatedActivity.STANDING
+                    } else if(unwrappedActivity.automotive || unwrappedActivity.cycling) {
+                        print("You should not be playing this game.")
+                        ActivityModel.shared.currentActivity = ActivityModel.ValidatedActivity.INVALID
+                    } else {
+                        print("Unknown")
+                        ActivityModel.shared.currentActivity = ActivityModel.ValidatedActivity.UNKNOWN
+                    }
+                }
+            }
+        }
+
+    }
+
+    func startPedometerMonitoring() {
         // check if pedometer is okay to use
-        
+
         let date = Calendar.current.startOfDay(for: Date())
         print("Start of today:")
         print(date)
-        if CMPedometer.isStepCountingAvailable(){
+        if CMPedometer.isStepCountingAvailable() {
             pedometer.startUpdates(from: date)
-            {(pedData:CMPedometerData?, error:Error?)->Void in
+            { (pedData: CMPedometerData?, error: Error?) -> Void in
                 if let data = pedData {
-                    
+
                     // display the output directly on the phone
                     DispatchQueue.main.async {
                         self.currStep.text = "Today's steps:\n\(data.numberOfSteps.floatValue)"
@@ -120,21 +117,21 @@ class ViewController: UIViewController {
             }
         }
     }
-    
-    func getYesterdaysSteps(){
-        
+
+    func getYesterdaysSteps() {
+
         let startOfDay = Calendar.current.startOfDay(for: Date().dayBefore)
-        let endOfDay = Calendar.current.startOfDay(for: Date())-1
+        let endOfDay = Calendar.current.startOfDay(for: Date()) - 1
         print("Start of yesterday:")
         print(startOfDay)
         print("End of yesterday:")
         print(endOfDay)
-        
-        
+
+
         // check if pedometer is okay to use
-        if CMPedometer.isStepCountingAvailable(){
+        if CMPedometer.isStepCountingAvailable() {
             pedometer.queryPedometerData(from: startOfDay, to: endOfDay)
-            {(pedData:CMPedometerData?, error:Error?)->Void in
+            { (pedData: CMPedometerData?, error: Error?) -> Void in
                 if let data = pedData {
 
                     // display the output directly on the phone
@@ -145,7 +142,7 @@ class ViewController: UIViewController {
             }
         }
     }
-    
+
 
 }
 
@@ -154,7 +151,7 @@ extension Date {
     var dayBefore: Date {
         return Calendar.current.date(byAdding: .day, value: -1, to: self)!
     }
-    
+
     var startOfDay: Date {
         return Calendar.current.startOfDay(for: self)
     }
@@ -165,11 +162,11 @@ extension Date {
         components.second = -1
         return Calendar.current.date(byAdding: components, to: startOfDay)!
     }
-    
-    public var removeTimeStamp : Date? {
-           guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: self)) else {
+
+    public var removeTimeStamp: Date? {
+        guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: self)) else {
             return nil
-           }
-           return date
-       }
+        }
+        return date
+    }
 }
