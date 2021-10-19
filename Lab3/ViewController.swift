@@ -96,10 +96,7 @@ class ViewController: UIViewController {
     func UpdateLabels(state: GameModel.State = GameModel.shared.getState()) {
         DispatchQueue.main.async {
             
-            print("HERE")
-
             if state == .IDLE {
-                print("THERE")
                 self.todaysValLabel.text = "\(Int(ActivityModel.shared.todaySteps))"
                 self.yesterdaysValLabel.text = "\(Int(ActivityModel.shared.yesterdaySteps))"
 
@@ -109,7 +106,6 @@ class ViewController: UIViewController {
                 // listen to step updates
                 ActivityModel.shared.todayStepListener = { steps -> () in
                     DispatchQueue.main.async {
-                        print("TEXT")
                         self.todaysValLabel.text = "\(Int(steps))"
                         self.UpdateStartButton()
                     }
@@ -117,7 +113,6 @@ class ViewController: UIViewController {
 
                 ActivityModel.shared.yesterdayStepListener = { steps -> () in
                     DispatchQueue.main.async {
-                        print("TEXT 2")
                         self.yesterdaysValLabel.text = "\(Int(steps))"
                     }
                 }
