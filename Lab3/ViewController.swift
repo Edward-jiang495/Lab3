@@ -13,13 +13,16 @@ class ViewController: UIViewController {
     @IBOutlet weak var pastStep: UILabel!
     //yesterday step label
     @IBOutlet weak var currStep: UILabel!
-    //today's step label
-    @IBOutlet weak var highScore: UILabel!
-    //high score label
-    @IBOutlet weak var currScore: UILabel!
+
+    @IBOutlet weak var yesterdaysValLabel: UILabel!
+    @IBOutlet weak var todaysValLabel: UILabel!
     //current score label
-
-
+    @IBOutlet weak var goalLabel: UILabel!
+    
+    @IBOutlet weak var scoreBoard: UIStackView!
+    @IBOutlet weak var goalTextField: UITextField!
+    @IBOutlet weak var goalSlider: UISlider!
+    
     @IBOutlet weak var startGame: UIButton!
 
     let activityManager = CMMotionActivityManager()
@@ -36,10 +39,20 @@ class ViewController: UIViewController {
         currStepNum = 0
         highScoreNum = 0
         currScoreNum = 0
-        pastStep.text = "Yesterday's Step \n \(pastStepNum)"
-        currStep.text = "Today's Step \n \(currStepNum)"
-        highScore.text = "High Score \n \(highScoreNum)"
-        currScore.text = "Current Score \n \(currScoreNum)"
+        todaysValLabel.text = "\(Int(pastStepNum))"
+        yesterdaysValLabel.text = "\(Int(currStepNum))"
+        print(self.view.frame.width)
+        print(self.view.frame.height)
+        self.scoreBoard.translatesAutoresizingMaskIntoConstraints = true
+        self.scoreBoard.frame = CGRect(x: 0, y: 40, width: self.view.frame.width, height: self.view.frame.height * (1.0 - 0.7) - 40)
+        
+//        startGame.titleLabel?.font =  UIFont(name: "Digital-7", size: 35)
+
+        
+        
+        let stepGoal = UserDefaults.standard.integer(forKey: "stepGoal")
+        goalSlider.value = Float(stepGoal)
+        goalTextField.text = "\(stepGoal)"
         var scene = GameScene(size: view.bounds.size)
         let skView = view as! SKView // the view in storyboard must be an SKView
         scene.scaleMode = .resizeFill
@@ -57,11 +70,17 @@ class ViewController: UIViewController {
 
 
     @IBAction func start(_ sender: UIButton) {
-        if(startGame.titleLabel?.text == "Start") {
+       
+        print((startGame.titleLabel?.text)! == "Start")
+        if((startGame.titleLabel?.text)! == "Start") {
+            print("in restart")
             startGame.setTitle("Restart", for: .normal)
+//            startGame.titleLabel?.font =  UIFont(name: "Digital-7", size: 35)
         }
         else {
             startGame.setTitle("Start", for: .normal)
+//            startGame.titleLabel?.font =  UIFont(name: "Digital-7", size: 35)
+            
         }
     }
 
@@ -111,13 +130,32 @@ class ViewController: UIViewController {
 
                     // display the output directly on the phone
                     DispatchQueue.main.async {
-                        self.currStep.text = "Today's steps:\n\(data.numberOfSteps.floatValue)"
+                        self.todaysValLabel.text = "\(data.numberOfSteps.floatValue)"
                     }
                 }
             }
         }
     }
 
+    @IBAction func sliderChanged(_ sender: Any) {
+        let updatedGoal = Int(round(goalSlider.value))
+        goalTextField.text = "\(updatedGoal)"
+        UserDefaults.standard.set(updatedGoal,forKey: "stepGoal")
+    }
+    
+    @IBAction func textFieldChange(_ sender: Any) {
+        if let input = Int(goalTextField.text!) {
+            print(input)
+            UserDefaults.standard.set(input,forKey: "stepGoal")
+        }
+        
+    }
+    
+    @IBAction func screenTapped(_ sender: Any) {
+        goalTextField.resignFirstResponder();
+    }
+    
+    
     func getYesterdaysSteps() {
 
         let startOfDay = Calendar.current.startOfDay(for: Date().dayBefore)
@@ -136,7 +174,7 @@ class ViewController: UIViewController {
 
                     // display the output directly on the phone
                     DispatchQueue.main.async {
-                        self.pastStep.text = "Yesterday's steps:\n\(data.numberOfSteps.floatValue)"
+                        self.yesterdaysValLabel.text = "\(data.numberOfSteps.floatValue)"
                     }
                 }
             }
@@ -161,12 +199,5 @@ extension Date {
         components.day = 1
         components.second = -1
         return Calendar.current.date(byAdding: components, to: startOfDay)!
-    }
-
-    public var removeTimeStamp: Date? {
-        guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: self)) else {
-            return nil
-        }
-        return date
     }
 }
