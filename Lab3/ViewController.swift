@@ -130,7 +130,7 @@ class ViewController: UIViewController {
 
                     // display the output directly on the phone
                     DispatchQueue.main.async {
-                        self.todaysValLabel.text = "\(data.numberOfSteps.floatValue)"
+                        self.todaysValLabel.text = "\(Int(data.numberOfSteps.floatValue))"
                     }
                 }
             }
@@ -174,7 +174,7 @@ class ViewController: UIViewController {
 
                     // display the output directly on the phone
                     DispatchQueue.main.async {
-                        self.yesterdaysValLabel.text = "\(data.numberOfSteps.floatValue)"
+                        self.yesterdaysValLabel.text = "\(Int(data.numberOfSteps.floatValue))"
                     }
                 }
             }
