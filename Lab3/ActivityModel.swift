@@ -11,9 +11,10 @@ import CoreMotion
 class ActivityModel {
     static let shared = ActivityModel()
 
-    // MARK: Pedometer
+    // MARK: == Pedometer ==
     let pedometer = CMPedometer()
 
+    // MARK: Step Values
     var yesterdayStepListener: ((Float) -> ()) = { _ in }
     var yesterdaySteps: Float = 0 {
         didSet
