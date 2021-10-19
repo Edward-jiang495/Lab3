@@ -4,7 +4,7 @@ import CoreMotion
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
 
-    let debug = true
+    let debug = false
 
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self

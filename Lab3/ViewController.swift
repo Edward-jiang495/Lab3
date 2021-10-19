@@ -30,26 +30,16 @@ class ViewController: UIViewController {
         yesterdaysValLabel.text = " "
         todaysValLabel.text = " "
 
-        // listen to step updates
-        ActivityModel.shared.todayStepListener = { steps -> () in
-            DispatchQueue.main.async {
-                self.todaysValLabel.text = "\(Int(steps))"
-                self.UpdateStartButton()
-            }
-        }
-
-        ActivityModel.shared.yesterdayStepListener = { steps -> () in
-            DispatchQueue.main.async {
-                self.yesterdaysValLabel.text = "\(Int(steps))"
-            }
-        }
-
         ActivityModel.shared.updateSteps()
         ActivityModel.shared.startActivityMonitoring()
 
         // listen to gamestate updates
         GameModel.shared.gameStateListeners["startbutton"] = UpdateStartButton
+        GameModel.shared.gameStateListeners["scorelabels"] = UpdateLabels
         GameModel.shared.setState(state: .IDLE)
+        
+        UpdateLabels()
+        UpdateStartButton()
     }
 
     override func viewDidLoad() {
@@ -70,7 +60,7 @@ class ViewController: UIViewController {
         skView.presentScene(scene)
     }
 
-    // MARK: Button Handling
+    // MARK: UI Update Handling
 
     @IBAction func start(_ sender: UIButton) {
         GameModel.shared.Start()
@@ -98,8 +88,51 @@ class ViewController: UIViewController {
 
                 self.startGame.setTitle(" ", for: .normal)
             }
-            
+
             self.startGame.titleLabel?.font = UIFont(name: "Digital-7", size: 35)
+        }
+    }
+
+    func UpdateLabels(state: GameModel.State = GameModel.shared.getState()) {
+        DispatchQueue.main.async {
+            
+            print("HERE")
+
+            if state == .IDLE {
+                print("THERE")
+                self.todaysValLabel.text = "\(Int(ActivityModel.shared.todaySteps))"
+                self.yesterdaysValLabel.text = "\(Int(ActivityModel.shared.yesterdaySteps))"
+
+                self.currStep.text = "Today"
+                self.pastStep.text = "Yesterday"
+
+                // listen to step updates
+                ActivityModel.shared.todayStepListener = { steps -> () in
+                    DispatchQueue.main.async {
+                        print("TEXT")
+                        self.todaysValLabel.text = "\(Int(steps))"
+                        self.UpdateStartButton()
+                    }
+                }
+
+                ActivityModel.shared.yesterdayStepListener = { steps -> () in
+                    DispatchQueue.main.async {
+                        print("TEXT 2")
+                        self.yesterdaysValLabel.text = "\(Int(steps))"
+                    }
+                }
+
+            } else {
+                self.todaysValLabel.text = "\(Int(GameModel.shared.score))"
+                self.yesterdaysValLabel.text = "\(Int(GameModel.shared.highscore))"
+
+                self.currStep.text = "Score"
+                self.pastStep.text = "High score"
+
+                GameModel.shared.scoreListener = { (score: Int) -> () in
+                    self.currStep.text = "\(Int(score))"
+                }
+            }
         }
     }
 

@@ -26,12 +26,18 @@ class GameModel {
     }
 
     var gameStateListeners: [String: (State) -> ()] = [:]
+    var scoreListener: ((Int) -> ()) = { _ in }
     var highscore: Int
-    var score: Int = 0
+    var score: Int = 0 {
+        didSet
+        {
+            scoreListener(score)
+        }
+    }
 
     init() {
         highscore = UserDefaults.standard.integer(forKey: "highscore")
-        
+
         gameStateListeners["debuglog"] = { (state: State) -> () in
             print("Game State Updated: ", state)
         }
