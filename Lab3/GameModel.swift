@@ -26,10 +26,21 @@ class GameModel {
     }
 
     var gameStateListeners: [String: (State) -> ()] = [:]
+    var highscore: Int
+    var score: Int = 0
 
     init() {
+        highscore = UserDefaults.standard.integer(forKey: "highscore")
+        
         gameStateListeners["debuglog"] = { (state: State) -> () in
-            print(state)
+            print("Game State Updated: ", state)
+        }
+
+        gameStateListeners["score"] = { (state: State) -> () in
+            if state == .FINISHED
+            {
+                self.score = 0
+            }
         }
     }
 

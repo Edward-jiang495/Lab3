@@ -34,6 +34,7 @@ class ViewController: UIViewController {
         ActivityModel.shared.todayStepListener = { steps -> () in
             DispatchQueue.main.async {
                 self.todaysValLabel.text = "\(Int(steps))"
+                self.UpdateStartButton()
             }
         }
 
@@ -79,17 +80,17 @@ class ViewController: UIViewController {
         DispatchQueue.main.async {
             if Int(ActivityModel.shared.todaySteps) >= ActivityModel.shared.goal
             {
-                self.startGame.isEnabled = state != GameModel.State.IN_GAME
+                self.startGame.isEnabled = state != .IN_GAME
 
                 switch state {
 
-                case GameModel.State.IN_GAME:
+                case .IN_GAME:
                     self.startGame.setTitle(" ", for: .normal)
 
-                case GameModel.State.IDLE:
+                case .IDLE:
                     self.startGame.setTitle("Start Game", for: .normal)
 
-                case GameModel.State.FINISHED:
+                case .FINISHED:
                     self.startGame.setTitle("Restart", for: .normal)
                 }
             } else {
@@ -97,11 +98,10 @@ class ViewController: UIViewController {
 
                 self.startGame.setTitle(" ", for: .normal)
             }
-
+            
             self.startGame.titleLabel?.font = UIFont(name: "Digital-7", size: 35)
         }
     }
-
 
     // MARK: Field Handling
 

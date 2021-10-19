@@ -19,7 +19,6 @@ class ActivityModel {
     var yesterdaySteps: Float = 0 {
         didSet
         {
-            print(yesterdaySteps)
             yesterdayStepListener(yesterdaySteps)
         }
     }
@@ -28,7 +27,6 @@ class ActivityModel {
     var todaySteps: Float = 0 {
         didSet
         {
-            print(todaySteps)
             todayStepListener(todaySteps)
         }
     }
@@ -48,7 +46,6 @@ class ActivityModel {
             { (pedData: CMPedometerData?, error: Error?) -> Void in
                 if let data = pedData {
                     self.todaySteps = data.numberOfSteps.floatValue
-                    print(data.numberOfSteps.floatValue)
                 }
             }
         }
@@ -80,9 +77,9 @@ class ActivityModel {
         case UNKNOWN
     }
 
-    private var currentActivity: ValidatedActivity = ValidatedActivity.INVALID {
+    private var currentActivity: ValidatedActivity = .UNKNOWN {
         didSet {
-            print(currentActivity)
+            print("Activity Updated: ", currentActivity)
             activityChangeCallback()
         }
     }
@@ -91,13 +88,13 @@ class ActivityModel {
     var activityIconName: String {
         switch currentActivity
         {
-        case ValidatedActivity.STANDING:
+        case .STANDING:
             return "standing.png"
-        case ValidatedActivity.WALKING:
+        case .WALKING:
             return "walking.png"
-        case ValidatedActivity.RUNNING:
+        case .RUNNING:
             return "running.png"
-        case ValidatedActivity.INVALID:
+        case .INVALID:
             return "warning.png"
         default:
             return "unknown.png"
@@ -132,27 +129,27 @@ class ActivityModel {
                 if let unwrappedActivity = activity {
                     if(unwrappedActivity.walking)
                     {
-                        self.currentActivity = ValidatedActivity.WALKING
+                        self.currentActivity = .WALKING
                     }
 
                     else if(unwrappedActivity.running)
                     {
-                        self.currentActivity = ValidatedActivity.RUNNING
+                        self.currentActivity = .RUNNING
                     }
 
                     else if(unwrappedActivity.stationary)
                     {
-                        self.currentActivity = ValidatedActivity.STANDING
+                        self.currentActivity = .STANDING
                     }
 
                     else if(unwrappedActivity.automotive || unwrappedActivity.cycling)
                     {
-                        self.currentActivity = ValidatedActivity.INVALID
+                        self.currentActivity = .INVALID
                     }
 
                     else
                     {
-                        self.currentActivity = ValidatedActivity.UNKNOWN
+                        self.currentActivity = .UNKNOWN
                     }
                 }
             }

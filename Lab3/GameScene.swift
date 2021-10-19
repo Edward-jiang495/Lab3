@@ -30,15 +30,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // game state listener
         GameModel.shared.gameStateListeners["player"] = { (state: GameModel.State) -> () in
             switch state {
-            case GameModel.State.IN_GAME:
+            case .IN_GAME:
                 player.physicsBody?.isDynamic = true
                 player.physicsBody?.affectedByGravity = true
 
-            case GameModel.State.FINISHED:
+            case .FINISHED:
                 player.physicsBody?.isDynamic = false
                 player.physicsBody?.affectedByGravity = false
 
-            case GameModel.State.IDLE:
+            case .IDLE:
                 player.physicsBody?.isDynamic = false
                 player.physicsBody?.affectedByGravity = false
 
@@ -86,7 +86,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             GameModel.shared.gameStateListeners["player"]!(GameModel.shared.getState())
 
-            if GameModel.shared.getState() == GameModel.State.IN_GAME && hasVelocity
+            if GameModel.shared.getState() == .IN_GAME && hasVelocity
             {
                 player.physicsBody?.velocity = velocity
                 player.physicsBody?.angularVelocity = angularVelocity
