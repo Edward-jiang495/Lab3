@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E882301271F0447003EF930 /* ActivityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E882300271F0447003EF930 /* ActivityModel.swift */; };
 		AB311222270B54820095DDB4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB311221270B54820095DDB4 /* AppDelegate.swift */; };
 		AB311224270B54820095DDB4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB311223270B54820095DDB4 /* SceneDelegate.swift */; };
 		AB311226270B54820095DDB4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB311225270B54820095DDB4 /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8E882300271F0447003EF930 /* ActivityModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityModel.swift; sourceTree = "<group>"; };
 		AB31121E270B54820095DDB4 /* Lab3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lab3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB311221270B54820095DDB4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AB311223270B54820095DDB4 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -60,6 +62,7 @@
 		AB311220270B54820095DDB4 /* Lab3 */ = {
 			isa = PBXGroup;
 			children = (
+				8E882300271F0447003EF930 /* ActivityModel.swift */,
 				AB311221270B54820095DDB4 /* AppDelegate.swift */,
 				AB311223270B54820095DDB4 /* SceneDelegate.swift */,
 				AB311225270B54820095DDB4 /* ViewController.swift */,
@@ -146,6 +149,7 @@
 			files = (
 				AB3112472714AE9B0095DDB4 /* GameScene.swift in Sources */,
 				AB311226270B54820095DDB4 /* ViewController.swift in Sources */,
+				8E882301271F0447003EF930 /* ActivityModel.swift in Sources */,
 				AB311222270B54820095DDB4 /* AppDelegate.swift in Sources */,
 				AB311224270B54820095DDB4 /* SceneDelegate.swift in Sources */,
 				AB31122C270B54820095DDB4 /* Lab3.xcdatamodeld in Sources */,
@@ -297,7 +301,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 87NPWNTFX6;
+				DEVELOPMENT_TEAM = F69WJ27LN4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lab3/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -326,7 +330,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 87NPWNTFX6;
+				DEVELOPMENT_TEAM = F69WJ27LN4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lab3/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
