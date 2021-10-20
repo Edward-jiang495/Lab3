@@ -76,7 +76,7 @@ class ViewController: UIViewController {
         DispatchQueue.main.async {
             if Int(ActivityModel.shared.todaySteps) >= ActivityModel.shared.goal
             {
-                self.startGame.isEnabled = state != .IN_GAME
+                self.startGame.isEnabled = state == .IDLE || state == .FINISHED
 
                 switch state {
 
@@ -115,7 +115,7 @@ class ViewController: UIViewController {
                 // listen to step updates
                 ActivityModel.shared.todayStepListener = { steps -> () in
                     DispatchQueue.main.async {
-                        if GameModel.shared.getState() != .IN_GAME
+                        if GameModel.shared.getState() == .IDLE
                         {
                             self.todaysValLabel.text = "\(Int(steps))"
                         }
