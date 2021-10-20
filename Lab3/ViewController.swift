@@ -59,6 +59,12 @@ class ViewController: UIViewController {
         scene.scaleMode = .resizeFill
         skView.presentScene(scene)
     }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        get {
+            return .portrait
+        }
+    }
 
     // MARK: UI Update Handling
 
@@ -124,13 +130,13 @@ class ViewController: UIViewController {
                 }
 
                 GameModel.shared.timerCallback = { (_, _) -> () in }
-                
+
                 self.goalLabel.text = "Goal"
-                
+
                 self.goalSlider.isUserInteractionEnabled = true
                 self.goalSlider.tintColor = UIColor.red
                 self.goalSlider.thumbTintColor = UIColor.white
-                
+
                 self.goalTextField.isUserInteractionEnabled = true
                 self.goalTextField.borderStyle = .roundedRect
             }
@@ -153,13 +159,13 @@ class ViewController: UIViewController {
                 }
 
                 GameModel.shared.timerCallback = self.TimerDisplay
-                
+
                 self.goalLabel.text = "Seconds Remaining"
-                
+
                 self.goalSlider.isUserInteractionEnabled = false
                 self.goalSlider.tintColor = UIColor.red
                 self.goalSlider.thumbTintColor = UIColor.clear
-                
+
                 self.goalTextField.isUserInteractionEnabled = false
                 self.goalTextField.borderStyle = .none
             }
@@ -170,12 +176,12 @@ class ViewController: UIViewController {
         goalTextField.text = " \(current)"
 
 //        print(GameModel.shared.getState())
-        
+
         if GameModel.shared.getState() == .STARTING
         {
             goalSlider.value = (Float(maxTime - current) / Float(maxTime)) * goalSlider.maximumValue
         }
-        
+
         else
         {
             goalSlider.value = (Float(current) / Float(maxTime)) * goalSlider.maximumValue
@@ -201,13 +207,13 @@ class ViewController: UIViewController {
             {
                 goalSlider.maximumValue = Float(input)
             }
-            
+
             input = min(input, Int(goalSlider.maximumValue))
             input = max(input, 0)
-            
+
             UserDefaults.standard.set(input, forKey: "stepGoal")
             ActivityModel.shared.goal = input
-            
+
             goalSlider.value = Float(input)
 
             UpdateStartButton()
