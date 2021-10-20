@@ -23,22 +23,22 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="dTk-6K-o7T">
-                                <rect key="frame" x="6" y="51" width="479" height="175"/>
+                                <rect key="frame" x="6" y="51" width="487" height="175"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pMt-7n-nUY">
-                                        <rect key="frame" x="0.0" y="0.0" width="479" height="55"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="487" height="55"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="zBQ-20-J8h">
-                                                <rect key="frame" x="0.0" y="0.0" width="239.5" height="55"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="243.5" height="55"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Today" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0n2-kC-bPv">
-                                                        <rect key="frame" x="0.0" y="0.0" width="239.5" height="27.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="243.5" height="27.5"/>
                                                         <fontDescription key="fontDescription" name="Digital-7" family="Digital-7" pointSize="30"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Today Val" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kir-H0-shy">
-                                                        <rect key="frame" x="0.0" y="27.5" width="239.5" height="27.5"/>
+                                                        <rect key="frame" x="0.0" y="27.5" width="243.5" height="27.5"/>
                                                         <fontDescription key="fontDescription" name="Digital-7" family="Digital-7" pointSize="30"/>
                                                         <color key="textColor" red="0.99694615600000003" green="0.27635198830000002" blue="0.23131951689999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                         <nil key="highlightedColor"/>
@@ -46,16 +46,16 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="fcg-Ox-yrU">
-                                                <rect key="frame" x="239.5" y="0.0" width="239.5" height="55"/>
+                                                <rect key="frame" x="243.5" y="0.0" width="243.5" height="55"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Yesterday" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T8Y-nV-OQc">
-                                                        <rect key="frame" x="0.0" y="0.0" width="239.5" height="27.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="243.5" height="27.5"/>
                                                         <fontDescription key="fontDescription" name="Digital-7" family="Digital-7" pointSize="30"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Yesterday" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZZU-sY-rhm">
-                                                        <rect key="frame" x="0.0" y="27.5" width="239.5" height="27.5"/>
+                                                        <rect key="frame" x="0.0" y="27.5" width="243.5" height="27.5"/>
                                                         <fontDescription key="fontDescription" name="Digital-7" family="Digital-7" pointSize="30"/>
                                                         <color key="textColor" red="0.99694615600000003" green="0.27635198830000002" blue="0.23131951689999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                         <nil key="highlightedColor"/>
@@ -64,14 +64,14 @@
                                             </stackView>
                                         </subviews>
                                     </stackView>
-                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="10" minValue="0.0" maxValue="10000" translatesAutoresizingMaskIntoConstraints="NO" id="Dj9-Lu-diP">
-                                        <rect key="frame" x="-2" y="59" width="483" height="31"/>
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="10" minValue="1" maxValue="10000" translatesAutoresizingMaskIntoConstraints="NO" id="Dj9-Lu-diP">
+                                        <rect key="frame" x="-2" y="59" width="491" height="31"/>
                                         <connections>
                                             <action selector="sliderChanged:" destination="ZhV-Hk-C6L" eventType="valueChanged" id="NAA-F5-q7O"/>
                                         </connections>
                                     </slider>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yXn-9K-XnQ">
-                                        <rect key="frame" x="0.0" y="93" width="479" height="34"/>
+                                        <rect key="frame" x="0.0" y="93" width="487" height="34"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Goal:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Km-lT-Lfa">
                                                 <rect key="frame" x="0.0" y="0.0" width="53.5" height="34"/>
@@ -80,7 +80,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9c5-YA-pi0">
-                                                <rect key="frame" x="53.5" y="0.0" width="425.5" height="34"/>
+                                                <rect key="frame" x="53.5" y="0.0" width="433.5" height="34"/>
                                                 <color key="textColor" red="0.99694615600000003" green="0.27635198830000002" blue="0.23131951689999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <fontDescription key="fontDescription" name="Digital-7" family="Digital-7" pointSize="22"/>
                                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
@@ -91,7 +91,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lLC-xg-QRM">
-                                        <rect key="frame" x="0.0" y="131" width="479" height="44"/>
+                                        <rect key="frame" x="0.0" y="131" width="487" height="44"/>
                                         <fontDescription key="fontDescription" name="Digital-7" family="Digital-7" pointSize="35"/>
                                         <color key="tintColor" red="0.99694615600000003" green="0.27635198830000002" blue="0.23131951689999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
