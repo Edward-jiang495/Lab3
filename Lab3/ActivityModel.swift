@@ -35,6 +35,7 @@ class ActivityModel {
 
     init() {
         goal = UserDefaults.standard.integer(forKey: "stepGoal")
+        goal = max(goal, 0)
     }
 
     func updateSteps() {
