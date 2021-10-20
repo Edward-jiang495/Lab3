@@ -37,7 +37,7 @@ class ViewController: UIViewController {
         GameModel.shared.gameStateListeners["startbutton"] = UpdateStartButton
         GameModel.shared.gameStateListeners["scorelabels"] = UpdateLabels
         GameModel.shared.setState(state: .IDLE)
-        
+
         UpdateLabels()
         UpdateStartButton()
     }
@@ -95,7 +95,7 @@ class ViewController: UIViewController {
 
     func UpdateLabels(state: GameModel.State = GameModel.shared.getState()) {
         DispatchQueue.main.async {
-            
+
             if state == .IDLE {
                 self.todaysValLabel.text = "\(Int(ActivityModel.shared.todaySteps))"
                 self.yesterdaysValLabel.text = "\(Int(ActivityModel.shared.yesterdaySteps))"
@@ -106,7 +106,10 @@ class ViewController: UIViewController {
                 // listen to step updates
                 ActivityModel.shared.todayStepListener = { steps -> () in
                     DispatchQueue.main.async {
-                        self.todaysValLabel.text = "\(Int(steps))"
+                        if GameModel.shared.getState() != .IN_GAME
+                        {
+                            self.todaysValLabel.text = "\(Int(steps))"
+                        }
                         self.UpdateStartButton()
                     }
                 }
@@ -125,7 +128,13 @@ class ViewController: UIViewController {
                 self.pastStep.text = "High score"
 
                 GameModel.shared.scoreListener = { (score: Int) -> () in
-                    self.currStep.text = "\(Int(score))"
+                    print("Score: \(Int(score))")
+                    self.todaysValLabel.text = "\(Int(score))"
+                }
+                
+                GameModel.shared.highscoreListener = { (score: Int) -> () in
+                    print("High score: \(Int(score))")
+                    self.yesterdaysValLabel.text = "\(Int(score))"
                 }
             }
         }

@@ -26,14 +26,24 @@ class GameModel {
     }
 
     var gameStateListeners: [String: (State) -> ()] = [:]
+    
     var scoreListener: ((Int) -> ()) = { _ in }
-    var highscore: Int
     var score: Int = 0 {
         didSet
         {
             scoreListener(score)
         }
     }
+    
+    var highscoreListener: ((Int) -> ()) = { _ in }
+    var highscore: Int {
+        didSet
+        {
+            highscoreListener(highscore)
+        }
+    }
+    
+    var timeBankSeconds: Int = 0
 
     init() {
         highscore = UserDefaults.standard.integer(forKey: "highscore")
@@ -43,14 +53,24 @@ class GameModel {
         }
 
         gameStateListeners["score"] = { (state: State) -> () in
+            if state == .IN_GAME {
+                self.score = 0
+            }
+            
             if state == .FINISHED
             {
-                self.score = 0
+                if self.score > self.highscore
+                {
+                    self.highscore = self.score
+                    UserDefaults.standard.set(self.highscore, forKey: "highscore")
+                }
             }
         }
     }
 
     func Start() {
+        timeBankSeconds = 10 * Int(ActivityModel.shared.todaySteps / Float(ActivityModel.shared.goal))
+        
         currentState = State.IN_GAME
     }
 
