@@ -3,219 +3,318 @@ import SpriteKit
 import CoreMotion
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    
+
+    let debug = false
+
+    let spawnPoints = [
+        CGPoint(x: 0.25, y: 0.30),
+        CGPoint(x: 0.10, y: 0.40),
+        CGPoint(x: 0.18, y: 0.55),
+        CGPoint(x: 0.50, y: 0.10),
+        CGPoint(x: 0.18, y: 0.13),
+        CGPoint(x: 0.82, y: 0.30),
+        CGPoint(x: 0.89, y: 0.52),
+        CGPoint(x: 0.70, y: 0.62),
+        CGPoint(x: 0.92, y: 0.12),
+        CGPoint(x: 0.85, y: 0.14),
+    ]
+
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         backgroundColor = SKColor.white
         // start motion for gravity
         self.startMotionUpdates()
+
+        self.spawnTrack()
+        self.spawnTriggerZones()
+        self.spawnPlayer(xPos: size.width * 0.5, yPos: size.height * 0.625)
+
+        for point in spawnPoints
+        {
+            spawnObstacle(xPos: size.width * point.x, yPos: size.height * point.y)
+        }
         
-        self.addLap()
+        GameModel.shared.gameStateListeners["contacts"] = {(state: GameModel.State) in
+            if state == .STARTING {
+                self.nextTarget = 1
+            }
+        }
+
+        if debug {
+            let skview = self.view!
+            skview.showsFPS = true
+            skview.showsNodeCount = true
+            skview.showsPhysics = true
+        }
     }
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let touch = touches.first!
-        let location = touch.location(in: self.view)
+
+    func spawnTriggerZones()
+    {
+        let sizes = [
+            // top
+            CGSize(
+                width: size.height * 0.05,
+                height: size.width * 0.45
+            ),
         
-        self.addSpriteBottle(xp: location.x, yp: location.y)
-    }
-    func addSpriteBottle(xp: CGFloat, yp: CGFloat){
-        let spriteA = SKSpriteNode(imageNamed: "matchman.png") // this is
-
-        spriteA.size = CGSize(width:size.width*0.05,height:size.height * 0.05)
-
-        let randNumber = random(min: CGFloat(0.1), max: CGFloat(0.9))
-        spriteA.position = CGPoint(x: xp, y: yp)
-
-        spriteA.physicsBody = SKPhysicsBody(rectangleOf:spriteA.size)
-        spriteA.physicsBody?.restitution = random(min: CGFloat(1.0), max: CGFloat(1.5))
-        spriteA.physicsBody?.isDynamic = true
-        spriteA.physicsBody?.contactTestBitMask = 0x00000001
-        spriteA.physicsBody?.collisionBitMask = 0x00000001
-        spriteA.physicsBody?.categoryBitMask = 0x00000001
-
-        self.addChild(spriteA)
-
+            // left
+            CGSize(
+                width: size.width * 0.45,
+                height: size.height * 0.05
+            ),
+            
+            // bottom
+            CGSize(
+                width: size.height * 0.05,
+                height: size.width * 0.45
+            ),
+            
+            // right
+            CGSize(
+                width: size.width * 0.45,
+                height: size.height * 0.05
+            ),
+        ]
         
+        let positions = [
+            CGPoint(x: size.width * 0.5, y: size.height * 0.625), // top
+            CGPoint(x: size.width * 0.17, y: size.height * 0.4), // left
+            CGPoint(x: size.width * 0.5, y: size.height * 0.10),  // bottom
+            CGPoint(x: size.width * 0.83, y: size.height * 0.4), // right
+        ]
+
+        for i in 0...3
+        {
+            let zone = SKShapeNode(rectOf: sizes[i])
+            zone.position = positions[i]
+            
+            if !debug {
+                zone.alpha = 0
+            }
+            
+            else {
+                zone.fillColor = SKColor.red
+                zone.alpha = 0.2
+            }
+            
+            zone.physicsBody = SKPhysicsBody(rectangleOf: sizes[i])
+            zone.name = "zone\(i)"
+            
+            zone.physicsBody?.contactTestBitMask = 0x00000001
+            zone.physicsBody?.collisionBitMask = 0x00000001
+            zone.physicsBody?.categoryBitMask = 0x00000002
+            
+            zone.physicsBody?.pinned = true
+            zone.physicsBody?.allowsRotation = false
+            
+            self.addChild(zone)
+        }
     }
     
+    var nextTarget = 1
+    func didBegin(_ contact: SKPhysicsContact) {
+        var contactIndex = -1
+        
+        if contact.bodyA.categoryBitMask == 0x00000001 && contact.bodyB.categoryBitMask == 0x00000002
+        {
+            contactIndex = (contact.bodyB.node?.name?.last?.wholeNumberValue)!
+        }
+        
+        if contact.bodyA.categoryBitMask == 0x00000002 && contact.bodyB.categoryBitMask == 0x00000001
+        {
+            contactIndex = (contact.bodyA.node?.name?.last?.wholeNumberValue)!
+        }
+        
+        if contactIndex >= 0 && contactIndex == nextTarget
+        {
+            if contactIndex == 0
+            {
+                GameModel.shared.score += 1
+            }
+            
+            nextTarget = contactIndex == 3 ? 0 : contactIndex + 1
+        }
+    }
+
+    func spawnObstacle(xPos: CGFloat, yPos: CGFloat)
+    {
+        let texture = SKTexture(imageNamed: "hurdle2")
+        let obstacle = SKSpriteNode(texture: texture)
+
+        var size = texture.size()
+
+        size.width *= 0.07
+        size.height *= 0.07
+
+        obstacle.size = size
+        obstacle.physicsBody = SKPhysicsBody(texture: texture, size: size)
+
+        obstacle.position = CGPoint(x: xPos, y: yPos)
+
+        obstacle.physicsBody?.allowsRotation = false
+        obstacle.physicsBody?.pinned = true
+
+        obstacle.physicsBody?.contactTestBitMask = 0x00000001
+        obstacle.physicsBody?.collisionBitMask = 0x00000001
+        obstacle.physicsBody?.categoryBitMask = 0x00000001
+
+        obstacle.zRotation = Double.random(in: -0.785398...0.785398) // π/4
+
+        if debug {
+            obstacle.alpha = 0.05
+        }
+
+        self.addChild(obstacle)
+    }
+
+    func spawnPlayer(xPos: CGFloat, yPos: CGFloat, playerScale: CGFloat = 0.08)
+    {
+        let player = SKSpriteNode(imageNamed: ActivityModel.shared.activityIconName)
+        player.name = "player"
+
+        // game state listener
+        GameModel.shared.gameStateListeners["player"] = { (state: GameModel.State) -> () in
+            switch state {
+            case .STARTING:
+                player.position = CGPoint(x: xPos, y: yPos)
+                
+                player.physicsBody?.isDynamic = false
+                player.physicsBody?.affectedByGravity = false
+                
+                player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                player.physicsBody?.angularVelocity = 0
+                player.zRotation = 0
+                
+            case .IN_GAME:
+                player.physicsBody?.isDynamic = true
+                player.physicsBody?.affectedByGravity = true
+
+            case .FINISHED:
+                player.physicsBody?.isDynamic = false
+                player.physicsBody?.affectedByGravity = false
+
+            case .IDLE:
+                player.physicsBody?.isDynamic = false
+                player.physicsBody?.affectedByGravity = false
+                
+                player.position = CGPoint(x: xPos, y: yPos)
+            }
+        }
+
+        // register player to icon callback to update icon on activity change
+        ActivityModel.shared.activityChangeCallback = {
+
+            // create texture
+            player.texture = SKTexture(imageNamed: ActivityModel.shared.activityIconName)
+
+            // scale player node based on texture size
+            var size = player.texture?.size() ?? player.size
+
+            // scaling
+            size.height *= playerScale
+            size.width *= playerScale
+
+            player.size = size
+
+            // maintain velocity
+            var velocity: CGVector = CGVector()
+            var angularVelocity: CGFloat = CGFloat()
+            var hasVelocity = false
+
+            if let physicsBody = player.physicsBody {
+                velocity = physicsBody.velocity
+                angularVelocity = physicsBody.angularVelocity
+
+                hasVelocity = true
+
+            }
+
+            // generate physics body from textures
+            player.physicsBody = SKPhysicsBody(texture: player.texture!, size: player.size)
+
+            player.physicsBody?.mass *= 1.4
+            player.physicsBody?.restitution = 0.3
+
+            player.physicsBody?.contactTestBitMask = 0x00000001
+            player.physicsBody?.collisionBitMask = 0x00000001
+            player.physicsBody?.categoryBitMask = 0x00000001
+
+            GameModel.shared.gameStateListeners["player"]!(GameModel.shared.getState())
+
+            if GameModel.shared.getState() == .IN_GAME && hasVelocity
+            {
+                player.physicsBody?.velocity = velocity
+                player.physicsBody?.angularVelocity = angularVelocity
+            }
+        }
+
+        if debug {
+            player.alpha = 0.05
+        }
+
+        self.addChild(player)
+    }
+
+    func spawnTrack() {
+
+        // create textures
+        let trackOutterRightTexture = SKTexture(imageNamed: "track_outter_right")
+        let trackOutterLeftTexture = SKTexture(imageNamed: "track_outter_left")
+        let trackInnerTexture = SKTexture(imageNamed: "track_inner")
+
+        // assign physics bodies to textures
+        for texture in [trackOutterRightTexture, trackInnerTexture, trackOutterLeftTexture]
+        {
+            let outline = SKSpriteNode(texture: texture)
+
+            // place track outline
+            outline.size = CGSize(width: size.width, height: size.height * 0.7)
+            outline.position = CGPoint(x: size.width * 0.5, y: size.height * 0.35)
+
+            // physics for track outline
+            outline.physicsBody = SKPhysicsBody(texture: outline.texture!, size: outline.size)
+            outline.physicsBody?.pinned = true
+            outline.physicsBody?.allowsRotation = false
+            outline.physicsBody?.contactTestBitMask = 0x00000001
+            outline.physicsBody?.collisionBitMask = 0x00000001
+            outline.physicsBody?.categoryBitMask = 0x00000001
+
+            // hide if not debug
+            if !debug
+            {
+                outline.alpha = 0
+            } else {
+                outline.alpha = 0.05
+            }
+
+            self.addChild(outline)
+        }
+
+        // place image for lanes
+        let trackLanes = SKSpriteNode(imageNamed: "track_bg.png")
+        trackLanes.size = CGSize(width: size.width, height: size.height * 0.7)
+        trackLanes.position = CGPoint(x: size.width * 0.5, y: size.height * 0.35)
+
+        // don't hide physics outlines if debugging
+        if !debug {
+            self.addChild(trackLanes)
+        }
+    }
+
     let motion = CMMotionManager()
-    func startMotionUpdates(){
+    func startMotionUpdates() {
         // some internal inconsistency here: we need to ask the device manager for device
-        
-        if self.motion.isDeviceMotionAvailable{
+
+        if self.motion.isDeviceMotionAvailable {
             self.motion.deviceMotionUpdateInterval = 0.1
-            self.motion.startDeviceMotionUpdates(to: OperationQueue.main, withHandler: self.handleMotion )
+            self.motion.startDeviceMotionUpdates(to: OperationQueue.main, withHandler: self.handleMotion)
         }
     }
-    
-    func handleMotion(_ motionData:CMDeviceMotion?, error:Error?){
+
+    func handleMotion(_ motionData: CMDeviceMotion?, error: Error?) {
         if let gravity = motionData?.gravity {
-            self.physicsWorld.gravity = CGVector(dx: CGFloat(9.8*gravity.x), dy: CGFloat(9.8*gravity.y))
+            self.physicsWorld.gravity = CGVector(dx: CGFloat(11 * gravity.x), dy: CGFloat(11 * gravity.y))
         }
     }
-    // MARK: Utility Functions (thanks ray wenderlich!)
-    func random() -> CGFloat {
-        return CGFloat(Float(arc4random()) / Float(Int.max))
-    }
-    
-    func random(min: CGFloat, max: CGFloat) -> CGFloat {
-        return random() * (max - min) + min
-    }
-    
-
-    
-
-    
-    func addLap(){
-        //this func add sprite kite on the image
-        let uppercircle = SKShapeNode(circleOfRadius: size.width * 0.2)
-
-        uppercircle.fillColor = UIColor.black
-    
-        uppercircle.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
-        
-
-        
-        let lowercircle = SKShapeNode(circleOfRadius: size.width * 0.2)
-        lowercircle.fillColor = UIColor.black
-    
-        lowercircle.position = CGPoint(x: self.size.width/2, y: self.size.height/4)
-        
-      
-        
-        for obj in [uppercircle,lowercircle]{
-            obj.physicsBody = SKPhysicsBody(circleOfRadius: size.width * 0.2)
-            
-            obj.physicsBody?.isDynamic = true
-            obj.physicsBody?.pinned = true
-            obj.physicsBody?.allowsRotation = false
-            obj.physicsBody?.contactTestBitMask = 0x00000001
-            obj.physicsBody?.collisionBitMask = 0x00000001
-            obj.physicsBody?.categoryBitMask = 0x00000001
-            self.addChild(obj)
-            
-        }
-        
-        let left = SKSpriteNode()
-        let right = SKSpriteNode()
-        left.size = CGSize(width:size.width*0.1,height:size.height*0.26)
-        left.position = CGPoint(x:size.width*0.35, y:size.height*0.38)
-        right.size = CGSize(width:size.width*0.1,height:size.height*0.26)
-        right.position = CGPoint(x:size.width*0.65, y:size.height*0.38)
-        
-        for obj in [left,right]{
-            obj.color = UIColor.black
-            obj.physicsBody = SKPhysicsBody(rectangleOf:obj.size)
-            obj.physicsBody?.isDynamic = true
-            obj.physicsBody?.pinned = true
-            obj.physicsBody?.allowsRotation = false
-            obj.physicsBody?.contactTestBitMask = 0x00000001
-            obj.physicsBody?.collisionBitMask = 0x00000001
-            obj.physicsBody?.categoryBitMask = 0x00000001
-            self.addChild(obj)
-        }
-        
-        
-        let outerleft = SKSpriteNode()
-        let outerright = SKSpriteNode()
-        outerleft.size = CGSize(width:size.width*0.1,height:size.height*0.4)
-        outerleft.position = CGPoint(x:size.width*0.05, y:size.height*0.38)
-        outerright.size = CGSize(width:size.width*0.1,height:size.height*0.4)
-        outerright.position = CGPoint(x:size.width*0.95, y:size.height*0.38)
-        
-        
-        for obj in [outerleft,outerright]{
-            obj.color = UIColor.black
-            obj.physicsBody = SKPhysicsBody(rectangleOf:obj.size)
-            obj.physicsBody?.isDynamic = true
-            obj.physicsBody?.pinned = true
-            obj.physicsBody?.allowsRotation = false
-            obj.physicsBody?.contactTestBitMask = 0x00000001
-            obj.physicsBody?.collisionBitMask = 0x00000001
-            obj.physicsBody?.categoryBitMask = 0x00000001
-            self.addChild(obj)
-        }
-
-        let rightupperrect = UIBezierPath()
-        rightupperrect.move(to: CGPoint(x:size.width*0.9, y: size.height*0.58))
-        rightupperrect.addLine(to: CGPoint(x:size.width * 0.9, y: size.height * 0.7))
-        rightupperrect.addLine(to: CGPoint(x:size.width * 0.5, y: size.height * 0.7))
-        rightupperrect.close()
-        
-        let leftupperrect = UIBezierPath()
-        leftupperrect.move(to: CGPoint(x:size.width*0.1, y: size.height*0.58))
-        leftupperrect.addLine(to: CGPoint(x:size.width * 0.1, y: size.height * 0.7))
-        leftupperrect.addLine(to: CGPoint(x:size.width * 0.5, y: size.height * 0.7))
-        leftupperrect.close()
-        
-        let rightlowerrect = UIBezierPath()
-        rightlowerrect.move(to: CGPoint(x:size.width*0.9, y: size.height*0.18))
-        rightlowerrect.addLine(to: CGPoint(x:size.width * 0.9, y: size.height * 0.06))
-        rightlowerrect.addLine(to: CGPoint(x:size.width * 0.5, y: size.height * 0.06))
-        rightlowerrect.close()
-        
-        let leftlowerrect = UIBezierPath()
-        leftlowerrect.move(to: CGPoint(x:size.width*0.1, y: size.height*0.18))
-        leftlowerrect.addLine(to: CGPoint(x:size.width * 0.1, y: size.height * 0.06))
-        leftlowerrect.addLine(to: CGPoint(x:size.width * 0.5, y: size.height * 0.06))
-        leftlowerrect.close()
-        
-        
-        
-        
-        for arc in [leftupperrect, rightupperrect, leftlowerrect,rightlowerrect]{
-            
-            let obj = SKShapeNode(path: arc.cgPath)
-            obj.physicsBody = SKPhysicsBody(polygonFrom: arc.cgPath)
-            obj.physicsBody?.isDynamic = true
-            obj.physicsBody?.pinned = true
-            obj.physicsBody?.allowsRotation = false
-            obj.strokeColor = UIColor.red
-            obj.physicsBody?.contactTestBitMask = 0x00000001
-            obj.physicsBody?.collisionBitMask = 0x00000001
-            obj.physicsBody?.categoryBitMask = 0x00000001
-            self.addChild(obj)
-            
-        }
-        
-//        leftupperrect.
-        
-        
-        
-        
-        
-//        let upperarc = UIBezierPath(arcCenter: CGPoint(x: size.width/2, y: size.height / 9 * 4), radius: size.width/2, startAngle: 0, endAngle: 3.14159, clockwise: true)
-//
-//        let lowerarc = UIBezierPath(arcCenter: CGPoint(x: size.width/2, y: size.height / 9 * 2), radius: size.width/2, startAngle: 0, endAngle: 3.14159, clockwise: false)
-//
-//        for arc in [upperarc, lowerarc]{
-//            let obj = SKShapeNode(path: arc.cgPath)
-//            obj.physicsBody = SKPhysicsBody(polygonFrom: arc.cgPath)
-//            obj.physicsBody?.isDynamic = true
-//            obj.physicsBody?.pinned = true
-//            obj.physicsBody?.allowsRotation = false
-//            obj.strokeColor = UIColor.red
-//            obj.physicsBody?.contactTestBitMask = 0x00000001
-//            obj.physicsBody?.collisionBitMask = 0x00000001
-//            obj.physicsBody?.categoryBitMask = 0x00000001
-//            self.addChild(obj)
-//        }
-        
-        
-        
-        
-        
-        //we have to add the background image as an sksprite node
-        //since ui image will always be in the front covering everything
-        let trackimage = SKSpriteNode(imageNamed: "track.jpg")
-        trackimage.size = CGSize(width:size.width,height:size.height*0.7)
-        trackimage.position = CGPoint(x:size.width*0.5, y:size.height*0.35)
-        self.addChild(trackimage)
-
-    }
-    
-    
-
-
 }
 
