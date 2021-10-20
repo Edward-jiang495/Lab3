@@ -77,6 +77,9 @@ class ViewController: UIViewController {
                 case .IN_GAME:
                     self.startGame.setTitle(" ", for: .normal)
 
+                case .STARTING:
+                    self.startGame.setTitle(" ", for: .normal)
+
                 case .IDLE:
                     self.startGame.setTitle("Start Game", for: .normal)
 
@@ -120,7 +123,19 @@ class ViewController: UIViewController {
                     }
                 }
 
-            } else {
+                GameModel.shared.timerCallback = { (_, _) -> () in }
+                
+                self.goalLabel.text = "Goal"
+                
+                self.goalSlider.isUserInteractionEnabled = true
+                self.goalSlider.tintColor = UIColor.red
+                self.goalSlider.thumbTintColor = UIColor.white
+                
+                self.goalTextField.isUserInteractionEnabled = true
+                self.goalTextField.borderStyle = .roundedRect
+            }
+
+            else {
                 self.todaysValLabel.text = "\(Int(GameModel.shared.score))"
                 self.yesterdaysValLabel.text = "\(Int(GameModel.shared.highscore))"
 
@@ -131,12 +146,39 @@ class ViewController: UIViewController {
                     print("Score: \(Int(score))")
                     self.todaysValLabel.text = "\(Int(score))"
                 }
-                
+
                 GameModel.shared.highscoreListener = { (score: Int) -> () in
                     print("High score: \(Int(score))")
                     self.yesterdaysValLabel.text = "\(Int(score))"
                 }
+
+                GameModel.shared.timerCallback = self.TimerDisplay
+                
+                self.goalLabel.text = "Seconds Remaining"
+                
+                self.goalSlider.isUserInteractionEnabled = false
+                self.goalSlider.tintColor = UIColor.red
+                self.goalSlider.thumbTintColor = UIColor.clear
+                
+                self.goalTextField.isUserInteractionEnabled = false
+                self.goalTextField.borderStyle = .none
             }
+        }
+    }
+
+    func TimerDisplay(current: Int, maxTime: Int) {
+        goalTextField.text = " \(current)"
+
+//        print(GameModel.shared.getState())
+        
+        if GameModel.shared.getState() == .STARTING
+        {
+            goalSlider.value = (Float(maxTime - current) / Float(maxTime)) * goalSlider.maximumValue
+        }
+        
+        else
+        {
+            goalSlider.value = (Float(current) / Float(maxTime)) * goalSlider.maximumValue
         }
     }
 
@@ -154,9 +196,19 @@ class ViewController: UIViewController {
     }
 
     @IBAction func textFieldChange(_ sender: Any) {
-        if let input = Int(goalTextField.text!) {
+        if var input = Int(goalTextField.text!) {
+            if input > Int(goalSlider.maximumValue)
+            {
+                goalSlider.maximumValue = Float(input)
+            }
+            
+            input = min(input, Int(goalSlider.maximumValue))
+            input = max(input, 0)
+            
             UserDefaults.standard.set(input, forKey: "stepGoal")
             ActivityModel.shared.goal = input
+            
+            goalSlider.value = Float(input)
 
             UpdateStartButton()
         }

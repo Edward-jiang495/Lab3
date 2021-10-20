@@ -4,7 +4,7 @@ import CoreMotion
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
 
-    let debug = true
+    let debug = false
 
     let spawnPoints = [
         CGPoint(x: 0.25, y: 0.30),
@@ -32,6 +32,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for point in spawnPoints
         {
             spawnObstacle(xPos: size.width * point.x, yPos: size.height * point.y)
+        }
+        
+        GameModel.shared.gameStateListeners["contacts"] = {(state: GameModel.State) in
+            if state == .STARTING {
+                self.nextTarget = 1
+            }
         }
 
         if debug {
@@ -169,6 +175,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // game state listener
         GameModel.shared.gameStateListeners["player"] = { (state: GameModel.State) -> () in
             switch state {
+            case .STARTING:
+                player.position = CGPoint(x: xPos, y: yPos)
+                
+                player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                player.physicsBody?.angularVelocity = 0
+                player.zRotation = 0
+                
             case .IN_GAME:
                 player.physicsBody?.isDynamic = true
                 player.physicsBody?.affectedByGravity = true
@@ -180,7 +193,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case .IDLE:
                 player.physicsBody?.isDynamic = false
                 player.physicsBody?.affectedByGravity = false
-
+                
                 player.position = CGPoint(x: xPos, y: yPos)
             }
         }

@@ -12,6 +12,7 @@ class GameModel {
 
     enum State {
         case IDLE
+        case STARTING
         case IN_GAME
         case FINISHED
     }
@@ -26,7 +27,7 @@ class GameModel {
     }
 
     var gameStateListeners: [String: (State) -> ()] = [:]
-    
+
     var scoreListener: ((Int) -> ()) = { _ in }
     var score: Int = 0 {
         didSet
@@ -34,7 +35,7 @@ class GameModel {
             scoreListener(score)
         }
     }
-    
+
     var highscoreListener: ((Int) -> ()) = { _ in }
     var highscore: Int {
         didSet
@@ -42,8 +43,6 @@ class GameModel {
             highscoreListener(highscore)
         }
     }
-    
-    var timeBankSeconds: Int = 0
 
     init() {
         highscore = UserDefaults.standard.integer(forKey: "highscore")
@@ -53,10 +52,10 @@ class GameModel {
         }
 
         gameStateListeners["score"] = { (state: State) -> () in
-            if state == .IN_GAME {
+            if state == .STARTING || state == .IDLE {
                 self.score = 0
             }
-            
+
             if state == .FINISHED
             {
                 if self.score > self.highscore
@@ -68,10 +67,48 @@ class GameModel {
         }
     }
 
+    var timeBankSeconds: Int = 0
+    var didCountdown = false
+    var timerCallback: ((Int, Int) -> ()) = { _, _ in }
+
     func Start() {
         timeBankSeconds = 10 * Int(ActivityModel.shared.todaySteps / Float(ActivityModel.shared.goal))
+        var currentTimeBank = timeBankSeconds
+
+        currentState = .STARTING
         
-        currentState = State.IN_GAME
+        let _ = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { timer in
+            print("Time Remaining: \(Int(currentTimeBank))")
+            self.timerCallback(currentTimeBank, self.timeBankSeconds)
+
+            currentTimeBank -= 1
+
+            if currentTimeBank < 0
+            {
+                timer.invalidate()
+                self.currentState = .FINISHED
+            }
+        })
+
+        var timeDelay = 10
+
+        let _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { timer in
+            
+            if timeDelay >= 0 && !self.didCountdown
+            {
+                self.timerCallback(self.timeBankSeconds + Int(Float(ActivityModel.shared.goal) * (Float(timeDelay) / 10.0)), Int(ActivityModel.shared.goal))
+            }
+
+            timeDelay -= 1
+
+            if timeDelay < 0 
+            {
+                timer.invalidate()
+                self.didCountdown = true
+                self.currentState = .IN_GAME
+                self.timerCallback(self.timeBankSeconds, self.timeBankSeconds)
+            }
+        })
     }
 
     func getState() -> GameModel.State {
