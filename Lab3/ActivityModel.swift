@@ -31,7 +31,7 @@ class ActivityModel {
         }
     }
 
-    var goal: Int = 0
+    var goal: Int = 69
 
     init() {
         goal = UserDefaults.standard.integer(forKey: "stepGoal")
