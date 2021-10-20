@@ -178,6 +178,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case .STARTING:
                 player.position = CGPoint(x: xPos, y: yPos)
                 
+                player.physicsBody?.isDynamic = false
+                player.physicsBody?.affectedByGravity = false
+                
                 player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
                 player.physicsBody?.angularVelocity = 0
                 player.zRotation = 0
